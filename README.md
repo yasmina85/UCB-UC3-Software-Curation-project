@@ -8,10 +8,10 @@ Research software is an important part of the scholarly ecosystem and open scien
 **Partners:** UC Berkeley, California Digital Library
 
 ## Outputs
-[Survey about research software usage](http://news.lib.berkeley.edu/2017/01/30/software-survey/)
+*[Survey about research software usage](http://news.lib.berkeley.edu/2017/01/30/software-survey/)
 
 ## News
-[Survey description (30/01/2017)](https://berkeley.qualtrics.com/jfe/form/SV_aXc6OrbCpg26wo5)
+*[Survey description (30/01/2017)](https://berkeley.qualtrics.com/jfe/form/SV_aXc6OrbCpg26wo5)
 
 ---------
 
