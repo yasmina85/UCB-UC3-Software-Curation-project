@@ -1,4 +1,4 @@
-# UCB-UC3-Software-Curation-project
+# UCB/UC3 Software Curation project
 
 ## Description 
 
