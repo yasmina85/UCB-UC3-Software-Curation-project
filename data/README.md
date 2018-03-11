@@ -31,3 +31,11 @@ Description: A list of variables associated with the survey questions in the ana
 
 Filename: Alnoamany_Borghi_2018_data.csv
 Description: Survey responses from all included participants (n=215). Variable names correspond to survey questions as described in data dictionary. Variables that included potentially identifying information (e.g. age, university/department affiliation) have been removed from this version.
+
+---------------------
+Citation
+---------------------
+For citing this data, please use the following doi: https://doi.org/10.6078/D1HM2W
+
+
+
