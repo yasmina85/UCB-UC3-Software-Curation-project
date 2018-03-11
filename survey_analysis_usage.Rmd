@@ -1,0 +1,477 @@
+---
+title: Software usage P1 - software characteristics
+  html_notebook: default
+Description: This is a notebook for genrating software characteristics graphs section. 
+Inputs: processed - filtered_data_215rows.csv
+  
+Update: Computed all the characteristics after splitting the data based on the discipline
+---
+
+
+Plotting Software Usage
+```{r}
+#install.packages('plyr')
+#install.packages('formattable')
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read Data from file
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+filteredx3 <- read.csv("../../filtered_data_215rows_institute.csv")
+
+
+#Count for frequency of categeorical variable in a data frame 
+#, ylim=c(0,100),
+#https://www.r-bloggers.com/how-to-get-the-frequency-table-of-a-categorical-variable-as-a-data-frame-in-r
+#pdf("graphs/Rstudio_graphs/usage.pdf")
+par(mfrow=c(2,2))
+#Write software
+use_SC_freq=count(filteredx3, 'write_SC')
+use_SC_freq<-use_SC_freq[-c(4),]
+use_SC_freq_sorted <- arrange(use_SC_freq, desc(use_SC_freq$freq))
+tot = sum(use_SC_freq_sorted$freq)
+xx<- barplot((use_SC_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, ylim=c(0,101), main="Do you write source code?")
+text(x = xx, y = ((use_SC_freq_sorted$freq/tot)*100),label=round((use_SC_freq_sorted$freq/tot)*100,2), pos = 3, cex = 1.2)
+
+
+
+#Use software
+#
+use_SC_freq=count(filteredx3, 'use_SC')
+use_SC_freq<-use_SC_freq[-c(4),]
+use_SC_freq_sorted <- arrange(use_SC_freq, desc(use_SC_freq$freq))
+tot = sum(use_SC_freq_sorted$freq)
+xx<- barplot((use_SC_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), ylim=c(0,101), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2,main="Do you use source code written by others?")
+text(x = xx, y = ((use_SC_freq_sorted$freq/tot)*100),label=round((use_SC_freq_sorted$freq/tot)*100,2), pos = 3, cex = 1.2)
+
+#Write executables
+#,
+use_SC_freq=count(filteredx3, 'create_exe')
+use_SC_freq<-use_SC_freq[-c(4),]
+use_SC_freq_sorted <- arrange(use_SC_freq, desc(use_SC_freq$freq))
+tot = sum(use_SC_freq_sorted$freq)
+xx<- barplot((use_SC_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), ylim=c(0,100), cex.names=1.3,  cex.lab=1.3,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.3, main="Do you create executables?")
+text(x = xx, y = ((use_SC_freq_sorted$freq/tot)*100),label=round((use_SC_freq_sorted$freq/tot)*100,2), pos = 3, cex = 1.2)
+
+#Use executables
+#,
+use_SC_freq=count(filteredx3, 'use_exe')
+use_SC_freq<-use_SC_freq[-c(4),]
+use_SC_freq_sorted <- arrange(use_SC_freq, desc(use_SC_freq$freq))
+tot = sum(use_SC_freq_sorted$freq)
+xx<- barplot((use_SC_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), ylim=c(0,100), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, main="Do you use others' executables?")
+text(x = xx, y = ((use_SC_freq_sorted$freq/tot)*100),label=round((use_SC_freq_sorted$freq/tot)*100,2), pos = 3, cex = 1.2)
+
+#dev.off()
+
+
+```
+
+
+## Plotting Software Usage based on on discipline
+
+
+usage_creat_exe_cs
+
+```{r}
+#pdf("graphs/Rstudio_graphs/usage_creat_exe_cs.pdf")
+
+library(plyr)
+library(dplyr) 
+library(tidyr)
+
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+library(Rmisc)
+
+
+demo_data <- read.csv("../../filtered_data_215rows_institute.csv")
+
+
+#Read and filter Data 
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,create_exe)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,create_exe)
+
+
+training_freq1=na.omit(count(filtered_data_noncs, 'create_exe'))
+training_freq1_sorted <- arrange(training_freq1, desc(training_freq1$freq))
+tot1 = sum(training_freq1_sorted$freq)
+#tot1
+training_freq2=na.omit(count(filtered_data_cs, 'create_exe'))
+training_freq2 <- rbind(training_freq2, c("I don't know", as.numeric(0)))
+training_freq2$freq <- as.numeric(training_freq2$freq)
+training_freq2$freq
+
+training_freq2_sorted <- arrange(training_freq2, desc(training_freq2$freq))
+#training_freq2_sorted
+tot2 = sum(training_freq2_sorted$freq)
+#tot2
+
+xx <- (training_freq1_sorted$freq/tot1)*100
+yy <- (training_freq2_sorted$freq/tot2)*100
+
+#training_df = t(as.matrix(training_freq1_sorted$freq, training_freq2_sorted$freq))
+
+training_df = data.frame((training_freq1_sorted$freq/tot1)*100, (training_freq2_sorted$freq/tot2)*100)
+training_df
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, beside = T, ylim=c(0,100), ylab="%")
+#text(x = xx, y = ((training_freq2_sorted$freq/tot)*100),label=percent(training_freq2_sorted$freq/tot), pos = 3, cex = 1.3)
+
+xx
+write.csv(training_df, file = "create_exe_data.csv")
+text(x = xx[1,], y = ((training_freq1_sorted$freq/tot1)*100),label=round(((training_freq1_sorted$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((training_freq2_sorted$freq/tot2)*100),label=round(((training_freq2_sorted$freq/tot2)*100),2), pos = 3, cex = 1.1)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+chisq.test(training_df)
+#dev.off()
+#173
+#38
+```
+write_SC
+
+```{r}
+
+#pdf("graphs/Rstudio_graphs/usage_write_sc_cs.pdf")
+
+library(dplyr) 
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read and filter Data 
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,write_SC)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,write_SC)
+
+levels(filtered_data_cs$write_SC)
+filtered_data_cs$write_SC
+
+
+count(filtered_data_cs, 'write_SC')
+
+
+
+training_freq1=count(filtered_data_noncs, 'write_SC')
+
+#training_freq1<-training_freq1[-c(4),]
+training_freq1_sorted <- arrange(training_freq1, desc(training_freq1$freq))
+tot1 = sum(training_freq1_sorted$freq)
+
+training_freq2=na.omit(count(filtered_data_cs, 'write_SC'))
+training_freq2 <- rbind(training_freq2, c("I don't know", as.numeric(0)))
+training_freq2$freq <- as.numeric(training_freq2$freq)
+training_freq2$freq
+#training_freq1<-training_freq1[-c(4),]
+training_freq2_sorted <- arrange(training_freq2, desc(training_freq2$freq))
+
+training_freq2_sorted
+tot2 = sum(training_freq2_sorted$freq)
+tot2
+
+xx <- (training_freq1_sorted$freq/tot1)*100
+yy <- (as.numeric(training_freq2_sorted$freq)/tot2)*100
+
+
+#training_df = t(as.matrix(training_freq1_sorted$freq, training_freq2_sorted$freq))
+
+training_df = data.frame((training_freq1_sorted$freq/tot1)*100, (as.numeric(training_freq2_sorted$freq/tot2)*100))
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, beside = T, ylim=c(0,105), ylab="%")
+#text(x = xx, y = ((training_freq2_sorted$freq/tot)*100),label=percent(training_freq2_sorted$freq/tot), pos = 3, cex = 1.3)
+
+chisq.test(training_df)
+
+text(x = xx[1,], y = ((training_freq1_sorted$freq/tot1)*100),label=round(((training_freq1_sorted$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((training_freq2_sorted$freq/tot2)*100),label=round(((training_freq2_sorted$freq/tot2)*100),2), pos = 3, cex = 1.1)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+#dev.off()
+
+```
+
+Use sc discipline
+
+```{r}
+
+
+#pdf("graphs/Rstudio_graphs/usage_use_sc_cs.pdf")
+
+library(dplyr) 
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read and filter Data 
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,use_SC)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,use_SC)
+
+training_freq1=count(filtered_data_noncs, 'use_SC')
+
+#training_freq1<-training_freq1[-c(4),]
+training_freq1_sorted <- arrange(training_freq1, desc(training_freq1$freq))
+tot1 = sum(training_freq1_sorted$freq)
+tot1
+training_freq2=count(filtered_data_cs, 'use_SC')
+#solve the problem of don't know choice by adding a row manually and convert the type of the whole column into numeric
+training_freq2 <- rbind(training_freq2, c("I don't know", 0))
+training_freq2$freq <- as.numeric(training_freq2$freq)
+
+training_freq2_sorted <- arrange(training_freq2, desc(training_freq2$freq))
+tot2 = sum(training_freq2_sorted$freq)
+tot2
+
+xx <- (training_freq1_sorted$freq/tot1)*100
+yy <- (training_freq2_sorted$freq/tot2)*100
+
+training_df = data.frame((training_freq1_sorted$freq/tot1)*100, (as.numeric(training_freq2_sorted$freq/tot2)*100))
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, beside = T, ylim=c(0,105), ylab="%")
+text(x = xx[1,], y = ((training_freq1_sorted$freq/tot1)*100),label=round(((training_freq1_sorted$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((training_freq2_sorted$freq/tot2)*100),label=round(((training_freq2_sorted$freq/tot2)*100),2), pos = 3, cex = 1.1)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+
+training_df
+chisq.test(training_df)
+
+#dev.off()
+#[1] 174
+#[1] 39
+```
+use exe discipline
+
+```{r}
+
+
+#pdf("graphs/Rstudio_graphs/usage_use_exe_cs.pdf")
+
+library(dplyr) 
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read and filter Data 
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,use_exe)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,use_exe)
+
+
+#filtered_data_cs$QID26 <- factor(filtered_data_cs$QID26, levels=c("Yes",  "No", "I don't know"))
+#notebook_freq_sorted =na.omit(count(filtered_data_cs, 'QID26'))
+#notebook_freq_sorted <- notebook_freq_sorted[!(notebook_freq_sorted$QID26 =="Not applicable"),]
+#tot = sum(notebook_freq_sorted$freq)
+
+training_freq1=na.omit(count(filtered_data_noncs, 'use_exe'))
+training_freq1
+training_freq1_sorted <- arrange(training_freq1, desc(training_freq1$freq))
+tot1 = sum(training_freq1_sorted$freq)
+tot1
+training_freq2=na.omit(count(filtered_data_cs, 'use_exe'))
+training_freq2
+
+#solve the problem of don't know choice by adding a row manually and convert the type of the whole column into numeric
+training_freq2 <- rbind(training_freq2, c("I don't know", 0))
+training_freq2$freq <- as.numeric(training_freq2$freq)
+training_freq2_sorted <- arrange(training_freq2, desc(training_freq2$freq))
+
+training_freq2_sorted
+tot2 = sum(training_freq2_sorted$freq)
+tot2
+
+xx <- (training_freq1_sorted$freq/tot1)*100
+yy <- (training_freq2_sorted$freq/tot2)*100
+
+
+#training_df = t(as.matrix(training_freq1_sorted$freq, training_freq2_sorted$freq))
+
+training_df = data.frame((training_freq1_sorted$freq/tot1)*100, (as.numeric(training_freq2_sorted$freq/tot2)*100))
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.2,  cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.2, beside = T, ylim=c(0,105), ylab="%")
+#text(x = xx, y = ((training_freq2_sorted$freq/tot)*100),label=percent(training_freq2_sorted$freq/tot), pos = 3, cex = 1.3)
+
+xx
+text(x = xx[1,], y = ((training_freq1_sorted$freq/tot1)*100),label=round(((training_freq1_sorted$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((training_freq2_sorted$freq/tot2)*100),label=round(((training_freq2_sorted$freq/tot2)*100),2), pos = 3, cex = 1.1)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+
+chisq.test(training_df)
+
+#dev.off()
+#] 174
+#[1] 38
+```
+
+Plot Source code versus commerial software usage
+
+```{r}
+#Plot Source code versus commerial software usage
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#pdf("graphs/Rstudio_graphs/sw_type.pdf")
+filteredx3 <- read.csv("filtered_data_215rows.csv")
+
+repur_freq_sorted=na.omit(count(filteredx3, 'QID20'))
+repur_freq_sorted <- repur_freq_sorted[!(repur_freq_sorted$QID20 =="Not applicable"),]
+tot = sum(repur_freq_sorted$freq)
+
+filteredx3$use_comm_sw <- factor(filteredx3$use_comm_sw, levels=c("Yes",  "No", "I don't know"))
+use_comm_sw_freq_sorted=na.omit(count(filteredx3, 'use_comm_sw'))
+tot_comm = sum(use_comm_sw_freq_sorted$freq)
+
+#repur_freq_sorted <- repur_freq_sorted[!(repur_freq_sorted$QID20 =="Not applicable"),]
+#use_comm_sw_freq<-use_comm_sw_freq[-c(4),]
+#Sorting values in a column asce or Desc: use_comm_sw_freq_sorted <- arrange(use_comm_sw_freq, desc(use_comm_sw_freq$freq))
+
+filteredx3$use_opensource <- factor(filteredx3$use_opensource, levels=c("Yes",  "No", "I don't know"))
+use_sourcecode_freq_sorted=na.omit(count(filteredx3, 'use_opensource'))
+tot_source = sum(use_sourcecode_freq_sorted$freq)
+xx = cbind((use_sourcecode_freq_sorted$freq/214)*100, use_comm_sw_freq_sorted$freq/214*100)
+#par(mar=c(5.1,4.1,6,2.1))
+bb <- barplot(t(as.matrix(xx)), beside = T, col=c("darkturquoise", "lightcoral"), cex.names=1.2,  cex.lab=1.2, axis.lty = 1,  las= 1 ,  border = NA, names.arg=c("Yes", "No","I don't know"), ylim=c(0,105), ylab = c("%"), panel.first = grid(), cex=1.2)
+text(x = bb, y = t(as.matrix(xx)),label =round(t(as.matrix(xx)),2), pos = 3, cex = 1.1, col = c("black", "black"))
+legend("topright",leg = c("Open source","Commercial software"), col = c("darkturquoise", "lightcoral"), fill =c("darkturquoise", "lightcoral"),cex=1, border = NA)
+#dev.off()
+#lightseagreen
+```
+Code purpose
+
+"QID19 - 8.	How do you use code or software? [Please check all that apply.]"
+This question read data from different file than the other questions. 
+```{r}
+#Plot Code purpose
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#pdf("graphs/Rstudio_graphs/code_purpose.pdf")
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+  par(mar=c(3, 12, 3, 3))
+
+pur <- read.csv("data_for_r/code_purpose.txt", sep = "\t")
+#sort values in the graph
+pur_sorted<- arrange(pur, desc(pur$percentage))
+bp <- barplot(pur_sorted$percentage,  names.arg=pur_sorted$purpose,  horiz=TRUE, col="steelblue", border= "white",  las=1, cex.names=1.2,  cex.lab=1.2,  xlab = c("%"), panel.first = grid() , cex=1.2, xlim = c(0,110))
+text(y = bp-0.3, x = 6 ,label = pur_sorted$percentage, pos = 3, cex = 1)
+
+#dev.off()
+```
+
+Code Repurpose
+"QID20 - 9.	Have you ever repurposed your code or software (i.e. using it for a project other than the one for which it was originally created)?"
+```{r}
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read Data from file
+filteredx3 <- read.csv("filtered_data_215rows.csv")
+
+#pdf("graphs/Rstudio_graphs/repurpose.pdf")
+#Steps: modify the order of the levels to Yes, No, I don't know., Ommit the rows with NA, then Remove the row of Not applicable. 
+filteredx3$QID20 <- factor(filteredx3$QID20, levels=c("Yes",  "No", "I don't know"))
+repur_freq_sorted=na.omit(count(filteredx3, 'QID20'))
+repur_freq_sorted <- repur_freq_sorted[!(repur_freq_sorted$QID20 =="Not applicable"),]
+tot = sum(repur_freq_sorted$freq)
+tot
+xx<- barplot((repur_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), ylim=c(0,100),  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.2, cex.names=1.2,  cex.lab=1.2, ylab = c("%"))
+text(x = xx, y = ((repur_freq_sorted$freq/tot)*100),label=round(repur_freq_sorted$freq/tot,2), pos = 3, cex = 1.1)
+
+#dev.off()
+```
+
+
+"QID22 - 11.	Does everyone in your lab or research group write code using the same programming language(s)?"
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read Data from file
+filteredx3 <- read.csv("filtered_data_215rows.csv")
+#Does everyone in your lab or research group write code \n using the same programming language(s)?
+
+#Count for frequency of categeorical variable in a data frame 
+#https://www.r-bloggers.com/how-to-get-the-frequency-table-of-a-categorical-variable-as-a-data-frame-in-r
+#pdf("graphs/Rstudio_graphs/collaboration_coding1.pdf")
+#Change the levels order in a plot to a specific order.
+filteredx3$QID22 <- factor(filteredx3$QID22, levels=c("Yes",  "No", "I don't know"))
+lab_code_freq_sorted=na.omit(count(filteredx3, 'QID22'))
+#lab_code_freq_sorted <- arrange(lab_code_freq, desc(lab_code_freq$freq))
+lab_code_freq_sorted
+lab_code_freq_sorted <- lab_code_freq_sorted[!(lab_code_freq_sorted$QID22 =="Not applicable"),]
+#lab_code_freq_sorted<-lab_code_freq_sorted[-c(4),]
+lab_code_freq_sorted
+tot = sum(lab_code_freq_sorted$freq)
+tot
+xx<- barplot((lab_code_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), ylim=c(0,70), cex.names=1.2, cex.lab=1.2, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.2, ylab = "%")
+text(x = xx, y = ((lab_code_freq_sorted$freq/tot)*100),label=round((lab_code_freq_sorted$freq/tot)*100,2), pos = 3, cex = 1)
+
+#dev.off()
+```
+
+
+"QID25 - 14.	Do you write code collaboratively (i.e. with another person or multiple people)?"
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read Data from file
+filteredx3 <- read.csv("filtered_data_215rows.csv")
+
+filteredx3$QID22 <- factor(filteredx3$QID25, levels=c("Yes",  "No", "I don't know"))
+
+#Count for frequency of categeorical variable in a data frame 
+#https://www.r-bloggers.com/how-to-get-the-frequency-table-of-a-categorical-variable-as-a-data-frame-in-r
+#pdf("graphs/Rstudio_graphs/collaboration_coding2.pdf")
+#na.omit is for excluding NAs
+col_code_freq=na.omit(count(filteredx3, 'QID25'))
+col_code_freq_sorted <- arrange(col_code_freq, desc(col_code_freq$freq))
+col_code_freq_sorted
+col_code_freq_sorted <- col_code_freq_sorted[!(col_code_freq_sorted$QID25 =="Not applicable"),]
+#Remove row  by its index: col_code_freq_sorted<-col_code_freq_sorted[-c(4),]
+col_code_freq_sorted
+tot = sum(col_code_freq_sorted$freq)
+tot
+xx<- barplot((col_code_freq_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"),ylim=c(0,70), cex.names=1.2, cex.lab=1.2,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.2, ylab = "%")
+text(x = xx, y = ((col_code_freq_sorted$freq/tot)*100),label=round((col_code_freq_sorted$freq/sum(col_code_freq_sorted$freq))*100,2), pos = 3, cex = 1)
+
+#dev.off()
+```
+
+

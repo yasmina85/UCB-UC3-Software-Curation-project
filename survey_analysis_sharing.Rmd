@@ -1,0 +1,481 @@
+---
+title: "Software usage P2 -  sharing and preservation"
+Input: data_for_r folder
+Output folder: graphs/Rstudio_graphs/
+output:
+  html_document: default
+  html_notebook: default
+Description: This is a notebook for genrating sharing and preservation graphs section.
+---
+
+"QID31 - 2.	Do you share the code or software created as part of your research?"
+
+```{r}
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+
+#Read Data from file
+filteredx3 <- read.csv("filtered_data_215rows.csv")
+
+
+#Count for frequency of categeorical variable in a data frame 
+#https://www.r-bloggers.com/how-to-get-the-frequency-table-of-a-categorical-variable-as-a-data-frame-in-r
+pdf("graphs/Rstudio_graphs/sharing1.pdf")
+#par(mfrow=c(2,2))
+  #QID31 - 2. Do you share the code or software created as part of your research?
+filteredx3$QID31 <- factor(filteredx3$QID31, levels=c("Yes",  "No", "I don't know", "Not applicable"))
+sharecode_sorted=na.omit(count(filteredx3, 'QID31'))
+sharecode_sorted <- sharecode_sorted[!(sharecode_sorted$QID31 =="Not applicable"),]
+tot = sum(sharecode_sorted$freq)
+tot
+xx<- barplot((sharecode_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"),main="Do you share the code or software created as part of your research?", ylim=c(0,100), cex.names=1.3,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.3,  ylab = c("%"))
+text(x = xx, y = ((sharecode_sorted$freq/tot)*100),label=round(((sharecode_sorted$freq/tot)*100),2), pos = 3, cex = 1.3)
+dev.off()
+
+pdf("graphs/Rstudio_graphs/not_sharing.pdf")
+
+#QID32 - 3. Is there any reason your code or software could not be shared?
+levels(filteredx3$QID32)[4]  <- "Yes"
+levels(filteredx3$QID32)
+filteredx3$QID32 <- factor(filteredx3$QID32, levels=c("Yes",  "No", "I don't know", "Not applicable"))
+levels(filteredx3$QID32)
+
+reason_not_sharecode_sorted=na.omit(count(filteredx3, 'QID32'))
+reason_not_sharecode_sorted
+reason_not_sharecode_sorted <- reason_not_sharecode_sorted[!(reason_not_sharecode_sorted$QID32 =="Not applicable"),]
+reason_not_sharecode_sorted
+tot = sum(reason_not_sharecode_sorted$freq)
+tot
+reason_not_sharecode_sorted$freq
+xx<- barplot((reason_not_sharecode_sorted$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"), main="Is there any reason your code or software could not be shared?", ylim=c(0,100), cex.names=1.3,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.3)
+text(x = xx, y = ((reason_not_sharecode_sorted$freq/tot)*100),label=round(((reason_not_sharecode_sorted$freq/tot)*100),2), pos = 3, cex = 1.3)
+dev.off()
+
+pdf("graphs/Rstudio_graphs/sharing_change.pdf")
+
+#QID35 - 6. If you make a change to your code, do you share a new version?
+filteredx3$QID35 <- factor(filteredx3$QID35, levels=c("Yes",  "No", "I don't know"))
+code_change=na.omit(count(filteredx3, 'QID35'))
+code_change <- code_change[!(code_change$QID35 =="Not applicable"),]
+tot = sum(code_change$freq)
+tot
+xx<- barplot((code_change$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"),main="If you make a change to your code, do you share a new version?", ylim=c(0,100), cex.names=1.3,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.3,  ylab = c("%"))
+text(x = xx, y = ((code_change$freq/tot)*100),label=round(((code_change$freq/tot)*100),2), pos = 3, cex = 1.2)
+dev.off()
+
+pdf("graphs/Rstudio_graphs/sharing_version_control.pdf")
+
+#QID36 - 7. Do you use a version control system (e.g. Git, SVN)?
+filteredx3$QID36 <- factor(filteredx3$QID36, levels=c("Yes",  "No", "I don't know"))
+code_version=na.omit(count(filteredx3, 'QID36'))
+code_version <- code_version[!(code_version$QID36 =="Not applicable"),]
+tot = sum(code_version$freq)
+tot
+xx<- barplot((code_version$freq/tot)*100, col=c("steelblue", "lightsteelblue1", "royalblue4"),main="Do you use a version control system (e.g. Git, SVN)?", ylim=c(0,100), cex.names=1.3,  las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(), cex=1.3)
+text(x = xx, y = ((code_version$freq/tot)*100),label=round(((code_version$freq/tot)*100),2), pos = 3, cex = 1.3)
+dev.off()
+#dev.off()
+```
+
+#Read Data from file
+#QID31 - 2. Do you share the code or software created as part of your research?
+
+
+
+```{r}
+
+
+
+
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+library(dplyr) 
+library(tidyr)
+library(formattable)#this library for formatting the 0.97 to 97% throught percent() function
+#Read Data 
+
+#pdf("graphs/Rstudio_graphs/sharing1_cs.pdf")
+
+#filter data based on institution
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,QID31)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,QID31)
+
+
+levels(filtered_data_cs$QID31)
+levels(filtered_data_noncs$QID31)
+#Yes (please describe)  
+#- "I don't know"          "No"                    "Not applicable"       
+#[4] "Yes (please describe)"
+
+#Sorting the value of each of the filtered data, relabel the factors to "Yes",  "No", "I don't know", omit the NA values, getting the sum of the count of each factor after excluding the NA.
+filtered_data_noncs$QID31 <- factor(filtered_data_noncs$QID31, levels=c("Yes",  "No", "I don't know", "Not applicable"))
+notebook_freq_sorted1 =na.omit(count(filtered_data_noncs, 'QID31'))
+notebook_freq_sorted1 <- notebook_freq_sorted1[!(notebook_freq_sorted1$QID31 =="Not applicable"),]
+notebook_freq_sorted1
+tot1 = sum(notebook_freq_sorted1$freq)
+
+
+filtered_data_cs$QID31 <- factor(filtered_data_cs$QID31, levels=c("Yes",  "No", "I don't know", "Not applicable"))
+notebook_freq_sorted =na.omit(count(filtered_data_cs, 'QID31'))
+notebook_freq_sorted <- notebook_freq_sorted[!(notebook_freq_sorted$QID31 =="Not applicable"),]
+notebook_freq_sorted <- rbind(notebook_freq_sorted, c("I don't know", 0))
+notebook_freq_sorted$freq <- as.numeric(notebook_freq_sorted$freq)
+notebook_freq_sorted
+tot = sum(notebook_freq_sorted$freq)
+
+tot
+
+
+#Generate a data frame from the two filtered data 
+
+training_df = data.frame((notebook_freq_sorted1$freq/tot1)*100, (notebook_freq_sorted$freq/tot)*100)
+training_df
+#Plot the data frame that has the values of filetred data 
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.1,  cex.lab=1.1, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.1, beside = T,  ylim=c(0,100),ylab="%")
+
+#instead of using percent function to print the percentage on the bars I used round and removed the % sign to save a space.
+text(x = xx[1,], y = ((notebook_freq_sorted1$freq/tot1)*100),label=round(((notebook_freq_sorted1$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((notebook_freq_sorted$freq/tot)*100),label=round(((notebook_freq_sorted$freq/tot)*100),2), pos = 3, cex = 1.1)
+
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+
+chisq.test(training_df)
+
+#dev.off()
+```
+#QID32 - 3. Is there any reason your code or software could not be shared?
+
+```{r}
+
+#pdf("graphs/Rstudio_graphs/not_sharing_cs.pdf")
+
+#filter data based on institution
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,QID32)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,QID32)
+
+
+levels(filtered_data_cs$QID32)[4]  <- "Yes"
+levels(filtered_data_noncs$QID32) [4]  <- "Yes"
+#Yes (please describe)  
+#- "I don't know"          "No"                    "Not applicable"       
+#[4] "Yes (please describe)"
+
+#Sorting the value of each of the filtered data, relabel the factors to "Yes",  "No", "I don't know", omit the NA values, getting the sum of the count of each factor after excluding the NA.
+filtered_data_noncs$QID32 <- factor(filtered_data_noncs$QID32, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted1 =na.omit(count(filtered_data_noncs, 'QID32'))
+notebook_freq_sorted1 <- notebook_freq_sorted1[!(notebook_freq_sorted1$QID32 =="Not applicable"),]
+notebook_freq_sorted1
+tot1 = sum(notebook_freq_sorted1$freq)
+
+
+filtered_data_cs$QID32 <- factor(filtered_data_cs$QID32, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted =na.omit(count(filtered_data_cs, 'QID32'))
+notebook_freq_sorted <- notebook_freq_sorted[!(notebook_freq_sorted$QID32 =="Not applicable"),]
+#notebook_freq_sorted <- rbind(notebook_freq_sorted, c("I don't know", 0))
+#notebook_freq_sorted$freq <- as.numeric(notebook_freq_sorted$freq)
+notebook_freq_sorted
+tot = sum(notebook_freq_sorted$freq)
+
+tot
+
+
+#Generate a data frame from the two filtered data 
+
+training_df = data.frame((notebook_freq_sorted1$freq/tot1)*100, (notebook_freq_sorted$freq/tot)*100)
+training_df
+#Plot the data frame that has the values of filetred data 
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.1,  cex.lab=1.1, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.1, beside = T,  ylim=c(0,100),ylab="%")
+
+#instead of using percent function to print the percentage on the bars I used round and removed the % sign to save a space.
+text(x = xx[1,], y = ((notebook_freq_sorted1$freq/tot1)*100),label=round(((notebook_freq_sorted1$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((notebook_freq_sorted$freq/tot)*100),label=round(((notebook_freq_sorted$freq/tot)*100),2), pos = 3, cex = 1.1)
+chisq.test(training_df)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+
+#dev.off()
+#X-squared = 0.16537, df = 2, p-value = 0.9206
+
+
+```
+
+
+
+#QID35 - 6. If you make a change to your code, do you share a new version?
+
+
+
+```{r}
+#pdf("graphs/Rstudio_graphs/sharing_change_cs.pdf")
+
+#filter data based on institution
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,QID35)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,QID35)
+
+
+#levels(filtered_data_cs$QID35)[4]  <- "Yes"
+#levels(filtered_data_noncs$QID35) [4]  <- "Yes"
+#Yes (please describe)  
+#- "I don't know"          "No"                    "Not applicable"       
+#[4] "Yes (please describe)"
+
+#Sorting the value of each of the filtered data, relabel the factors to "Yes",  "No", "I don't know", omit the NA values, getting the sum of the count of each factor after excluding the NA.
+filtered_data_noncs$QID35 <- factor(filtered_data_noncs$QID35, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted1 =na.omit(count(filtered_data_noncs, 'QID35'))
+notebook_freq_sorted1 <- notebook_freq_sorted1[!(notebook_freq_sorted1$QID35 =="Not applicable"),]
+notebook_freq_sorted1
+tot1 = sum(notebook_freq_sorted1$freq)
+
+
+filtered_data_cs$QID35 <- factor(filtered_data_cs$QID35, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted =na.omit(count(filtered_data_cs, 'QID35'))
+notebook_freq_sorted <- notebook_freq_sorted[!(notebook_freq_sorted$QID35 =="Not applicable"),]
+#notebook_freq_sorted <- rbind(notebook_freq_sorted, c("I don't know", 0))
+#notebook_freq_sorted$freq <- as.numeric(notebook_freq_sorted$freq)
+notebook_freq_sorted
+tot = sum(notebook_freq_sorted$freq)
+
+tot
+
+
+#Generate a data frame from the two filtered data 
+
+training_df = data.frame((notebook_freq_sorted1$freq/tot1)*100, (notebook_freq_sorted$freq/tot)*100)
+training_df
+#Plot the data frame that has the values of filetred data 
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.1,  cex.lab=1.1, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.1, beside = T,  ylim=c(0,100),ylab="%")
+
+#instead of using percent function to print the percentage on the bars I used round and removed the % sign to save a space.
+text(x = xx[1,], y = ((notebook_freq_sorted1$freq/tot1)*100),label=round(((notebook_freq_sorted1$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((notebook_freq_sorted$freq/tot)*100),label=round(((notebook_freq_sorted$freq/tot)*100),2), pos = 3, cex = 1.1)
+
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+chisq.test(training_df)
+#X-squared = 2.2491, df = 2, p-value = 0.3248
+#dev.off()
+
+```
+
+sharing_version_control
+```{r}
+#pdf("graphs/Rstudio_graphs/sharing_version_control_cs.pdf")
+
+#filter data based on institution
+filtered_data_cs <- demo_data %>%
+  filter(demo_data$QID7 == 'Computer Science')  %>%
+  select(QID7,QID36)
+
+filtered_data_noncs <- demo_data %>%
+  filter(demo_data$QID7 != 'Computer Science')  %>%
+  select(QID7,QID36)
+
+#Yes (please describe)  
+#- "I don't know"          "No"                    "Not applicable"       
+#[4] "Yes (please describe)"
+
+#Sorting the value of each of the filtered data, relabel the factors to "Yes",  "No", "I don't know", omit the NA values, getting the sum of the count of each factor after excluding the NA.
+filtered_data_noncs$QID36 <- factor(filtered_data_noncs$QID36, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted1 =na.omit(count(filtered_data_noncs, 'QID36'))
+notebook_freq_sorted1 <- notebook_freq_sorted1[!(notebook_freq_sorted1$QID36 =="Not applicable"),]
+notebook_freq_sorted1
+tot1 = sum(notebook_freq_sorted1$freq)
+
+
+filtered_data_cs$QID36 <- factor(filtered_data_cs$QID36, levels=c("Yes",  "No", "I don't know"))
+notebook_freq_sorted =na.omit(count(filtered_data_cs, 'QID36'))
+notebook_freq_sorted <- notebook_freq_sorted[!(notebook_freq_sorted$QID36 =="Not applicable"),]
+notebook_freq_sorted <- rbind(notebook_freq_sorted, c("I don't know", 0))
+notebook_freq_sorted$freq <- as.numeric(notebook_freq_sorted$freq)
+notebook_freq_sorted
+tot = sum(notebook_freq_sorted$freq)
+
+tot
+
+
+#Generate a data frame from the two filtered data 
+
+training_df = data.frame((notebook_freq_sorted1$freq/tot1)*100, (notebook_freq_sorted$freq/tot)*100)
+training_df
+#Plot the data frame that has the values of filetred data 
+xx<- barplot(t(as.matrix(training_df)), col=c("steelblue", "pink2"), cex.names=1.1,  cex.lab=1.1, las= 1, axis.lty = 1,  border = NA, names.arg=c("Yes", "No","I don't know"), panel.first = grid(),cex=1.1, beside = T,  ylim=c(0,100),ylab="%")
+
+#instead of using percent function to print the percentage on the bars I used round and removed the % sign to save a space.
+text(x = xx[1,], y = ((notebook_freq_sorted1$freq/tot1)*100),label=round(((notebook_freq_sorted1$freq/tot1)*100),2), pos = 3, cex = 1.1)
+text(x = xx[2,], y = ((notebook_freq_sorted$freq/tot)*100),label=round(((notebook_freq_sorted$freq/tot)*100),2), pos = 3, cex = 1.1)
+chisq.test(training_df)
+legend("topright", c("Non-CS","CS"), cex=1,  col=c("steelblue", "pink2"),  pch=20)
+#X-squared = 16.489, df = 2, p-value = 0.0002626
+
+#dev.off()
+
+```
+
+
+
+#QID33 - 4. How do you tell people about the code or software you've shared? [Click all that apply]
+
+```{r}
+#Plot Code publishing
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#pdf("graphs/Rstudio_graphs/publishing_code.pdf")
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+  
+#Wrap function for wrapping long text in the graph  
+wrap.labels <- function(x, len)
+{
+  if (is.list(x))
+  {
+    lapply(x, wrap.it, len)
+  } else {
+    wrap.it(x, len)
+  }
+}
+
+par(mar=c(4, 15, 4, 4))
+wrap.it <- function(x, len)
+{ 
+  sapply(x, function(y) paste(strwrap(y, len), 
+                              collapse = "\n"), 
+         USE.NAMES = FALSE)
+}
+
+pup_sorted <- read.csv("data_for_r/publishing_code.txt", sep = "\t")
+#pup_sorted<- arrange(pup, desc(pup$percentage))
+wr.lap <- wrap.labels(pup_sorted$publish, 35)
+bp <- barplot(pup_sorted$percentage*100,  names.arg=wr.lap,  horiz=TRUE, col="steelblue", border= "white",  las=1, cex.names=1.05,  cex.lab=1.15, xlim=c(0,75), xlab = c("%"), panel.first = grid() , cex=1.3)
+text(y = bp-0.3, x = 6,label = round(pup_sorted$percentage,2), pos = 3, cex = 1.1)
+t.test(pup_sorted$percentage)
+#dev.off()
+
+```
+QID34 - 5. In what format do you typically share your code? [Click all that apply]
+
+
+```{r}
+ 
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+#library(Rmisc)
+pdf("graphs/Rstudio_graphs/sharing_code_format.pdf")
+#N=174
+
+#Read Data from file
+data_format <- read.csv("data_for_r/code_format.txt", sep = "\t")
+bp <- barplot(data_format$percentage*100,  names.arg=data_format$format,  col="steelblue", border= "white",  las=1, cex.names=1.3,  cex.lab=1.3, panel.first = grid() , cex=1.3, ylim = c(0,85), axis.lty = 1)
+text(x = bp, y =(data_format$percentage*100) ,label = round(data_format$percentage*100,2), pos = 3, cex = 1.3)
+
+dev.off()
+
+
+```
+
+
+
+"QID39 - 10.	How long do you typically save your code or software?"
+
+```{r}
+#Plot Code preservtion duration
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+pdf("graphs/Rstudio_graphs/preserve_duration.pdf")
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+  
+#Wrap function for wrapping long text in the graph  
+wrap.labels <- function(x, len)
+{
+  if (is.list(x))
+  {
+    lapply(x, wrap.it, len)
+  } else {
+    wrap.it(x, len)
+  }
+}
+
+par(mar=c(2, 15, 2, 2))
+wrap.it <- function(x, len)
+{ 
+  sapply(x, function(y) paste(strwrap(y, len), 
+                              collapse = "\n"), 
+         USE.NAMES = FALSE)
+}
+
+pt <- read.csv("data_for_r/preserve_duration.txt", sep = "\t")
+pt_sorted<- arrange(pt, desc(pt$percentage))
+wr.lap <- wrap.labels(pt_sorted$Answer, 35)
+bp <- barplot(pt_sorted$percentage*100,  names.arg=wr.lap,  horiz=TRUE, col="steelblue", border= "white",  las=1, cex.names=1.1,  cex.lab=1.15, xlim=c(0,50),  panel.first = grid() , cex=1.2, xlab="%")
+text(y = bp-0.3, x = 5,label = round(pt_sorted$percentage*100,1), pos = 3, cex = 1.15)
+
+dev.off()
+```
+
+
+
+
+"QID41 - 12.	Where do you save your code or software so that it is preserved over the long term? [Please check all that apply.]"	
+```{r}
+#Plot Code preservtion duration
+library(plyr)
+library(ggplot2)
+library(tidyr)
+#this library for formatting the 0.97 to 97% throught percent() function
+library(formattable)
+pdf("graphs/Rstudio_graphs/save_code.pdf")
+#filteredx3 <- read.csv("filtered_data_215rows.csv")
+
+
+#Wrap function for wrapping long text in the graph  
+wrap.labels <- function(x, len)
+{
+  if (is.list(x))
+  {
+    lapply(x, wrap.it, len)
+  } else {
+    wrap.it(x, len)
+  }
+}
+
+par(mar=c(4, 15, 4, 4))
+wrap.it <- function(x, len)
+{ 
+  sapply(x, function(y) paste(strwrap(y, len), 
+                              collapse = "\n"), 
+         USE.NAMES = FALSE)
+}
+
+savecode <- read.csv("data_for_r/save_code.txt", sep = "\t")
+#sort values in the graph
+savecode_sorted<- arrange(savecode, desc(savecode$percentage))
+wr.lap <- wrap.labels(savecode_sorted$Answer, 35)
+bp <- barplot(savecode_sorted$percentage*100,  names.arg=wr.lap,  horiz=TRUE, col="steelblue", border= "white",  las=1, cex.names=1.1,  cex.lab=1.15, xlim=c(0,80), xlab = c("%"), panel.first = grid() , cex=1.2)
+text(y = bp-0.3, x = 5,label = round(savecode_sorted$percentage*100,1), pos = 3, cex = 1.1)
+
+dev.off()
+```
