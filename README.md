@@ -26,9 +26,11 @@ This can be a table that contain dates, goals, outcome or status on each phase o
 ## Outputs/Deliverables
 * [Survey about research software usage](http://news.lib.berkeley.edu/2017/01/30/software-survey/) - Blog post
 * [Software as a Well-Formed Research Object](https://www.slideshare.net/yasmina85/software-as-a-wellformed-research-object) - [Presentation](https://dlfforum2017.sched.com/event/Bzsb/t1c-software-as-a-well-formed-research-object) at [DLF Forum 2017](https://forum2017.diglib.org)
-
+* Towards computational reproducibility: researcher perspectives on the use and sharing of software [Pre-print](https://peerj.com/preprints/26727/)
+* [Data on UC Berkeley Dash](https://dash.berkeley.edu/stash/dataset/doi:10.6078/D1HM2W)
 ## News
 * [Survey description (30/01/2017)](https://berkeley.qualtrics.com/jfe/form/SV_aXc6OrbCpg26wo5)
+
 
 ---------
 
